@@ -1,0 +1,12 @@
+@import "tailwindcss";
+@plugin "daisyui";
+
+/* #root {
+  background-image: radial-gradient(#009900 1px, transparent 1px);
+  background-size: 20px 20px;
+} */
+
+.active {
+  color: #01f501;
+  font-weight: bold;
+}
