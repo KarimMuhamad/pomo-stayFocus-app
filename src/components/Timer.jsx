@@ -39,11 +39,11 @@ const Timer = ({initialTime, onTimerEnd}) => {
       </div>
       <div className="flex mt-8">
         <button onClick={handleTimer} className="btn w-25 shadow-md bg-[#01f501] font-bold text-gray-950 rounded-full">
-          {isActivated ? (< i class='bx  bxs-pause text-3xl'/>) : (< i class='bx  bxs-play text-3xl' />)}
+          {isActivated ? (< i className='bx  bxs-pause text-3xl'/>) : (< i className='bx  bxs-play text-3xl' />)}
         </button>
         {isActivated && (
           <button className="w-25 bg-transparent font-bold text-white">
-            < i class='bx  bxs-skip-next text-3xl'  />
+            < i className='bx  bxs-skip-next text-3xl'  />
           </button>
         )}
       </div>

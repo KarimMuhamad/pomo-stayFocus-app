@@ -1,16 +1,16 @@
 import {Link, useNavigate} from "react-router";
 import {useState} from "react";
-import {useAuth} from "../contexts/AuthContext.jsx";
+import useAuthStore from "../store/useAuthStore.js";
 
 const Login = () => {
-  const {login} = useAuth();
-  const [identity, setIdentity] = useState("");
+  const {login} = useAuthStore();
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    const result = await login(identity, password);
+    const result = await login(email, password);
     if (!result) return alert('Failed to login');
     console.log(result);
     navigate('/');
@@ -26,13 +26,13 @@ const Login = () => {
 
           <div className="form-control w-full mb-4">
             <label className="label">
-              <span className="label-text text-white mb-1">Username or Email</span>
+              <span className="label-text text-white mb-1">Email</span>
             </label><br/>
             <input
-              type="text"
+              type="email"
               name="identifier"
-              value={identity}
-              onChange={(e) => setIdentity(e.target.value)}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="Username or Email"
               className="input input-bordered outline-none w-full bg-gray-950/50 text-white placeholder-gray-400 focus:bg-gray-950/80 focus:placeholder-gray-600 focus:outline-none focus:border-info transition"
             />

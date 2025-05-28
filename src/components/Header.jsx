@@ -1,9 +1,9 @@
 import { Link, NavLink } from "react-router";
-import {useAuth} from "../contexts/AuthContext.jsx";
 import getColorName from "../utils/getColorName.js";
+import useAuthStore from "../store/useAuthStore.js";
 
 const Header = () => {
-   const {user, login} = useAuth();
+   const {user, login} = useAuthStore();
    const getColor = user ? getColorName(user.data.username) : 'hsl(0, 0%, 50%)';
 
    return (
