@@ -37,7 +37,12 @@ const usePomodoroStore = create((set, get) => ({
 
       const prefs = response.data.data;
       console.log(prefs);
-      set({preferences: prefs});
+      const durations = {
+        'FOCUS': prefs.focusDuration,
+        'BREAK': prefs.shortBreakDuration,
+        'LONG BREAK': prefs.longBreakDuration,
+      }
+      set({preferences: prefs, seconds: durations[get().session]});
       console.log('Data' + this.preferences);
 
       get().applyPreferences(prefs);

@@ -10,7 +10,8 @@ const useAuthStore = create(
     login: async (email, password) => {
       try {
         const res = await axios.post('/auth/login', {email, password}, {
-          credentials: 'include'
+          credentials: 'include',
+          skipAuth: true
         });
         set({accessToken: res.data.accessToken, user: res.data});
         localStorage.setItem("accessToken", res.data.accessToken);

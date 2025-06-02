@@ -2,6 +2,7 @@ import SessionTitle from "./SessionTitle.jsx";
 import Timer from "./Timer.jsx";
 import usePomodoroStore from "../store/usePomdoroStore.js";
 import {useEffect} from "react";
+import Labels from "./Labels.jsx";
 
 const Pomodoro = () => {
   const {preferences, seconds,session,sessionType, switchSession, nextSession, getPreferences} = usePomodoroStore();
@@ -24,6 +25,9 @@ const Pomodoro = () => {
         ))}
       </div>
       <Timer sessionType={session} initialTime={seconds} onTimerEnd={nextSession}/>
+      <div className="flex bg-transparent backdrop-blur-md border shadow-md border-gray-700 rounded-md p-2">
+        <Labels/>
+      </div>
     </>
   );
 }

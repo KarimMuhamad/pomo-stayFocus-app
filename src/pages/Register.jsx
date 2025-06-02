@@ -11,7 +11,9 @@ const Register = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('/auth/register', {username, email, password});
+      const res = await axios.post('/auth/register', {username, email, password}, {
+        skipAuth: true
+      });
       console.log(res);
       navigate('/login');
     } catch (error) {

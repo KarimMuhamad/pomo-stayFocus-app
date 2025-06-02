@@ -12,9 +12,11 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   (config) => {
-    const { accessToken } = getAuthToken();
-    if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
+    if (!config.skipAuth) {
+      const { accessToken } = getAuthToken();
+      if (accessToken) {
+        config.headers.Authorization = `Bearer ${accessToken}`;
+      }
     }
     return config;
   },
