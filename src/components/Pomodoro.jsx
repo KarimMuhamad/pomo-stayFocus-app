@@ -3,15 +3,15 @@ import Timer from "./Timer.jsx";
 import usePomodoroStore from "../store/usePomdoroStore.js";
 import {useEffect} from "react";
 import Labels from "./Labels.jsx";
+import useAuthStore from "../store/useAuthStore.js";
 
 const Pomodoro = () => {
-  const {preferences, seconds,session,sessionType, switchSession, nextSession, getPreferences} = usePomodoroStore();
+  const {seconds,session,sessionType, switchSession, nextSession, getPreferences} = usePomodoroStore();
+  const {user} = useAuthStore();
 
   useEffect( () => {
     getPreferences();
   }, []);
-
-  console.log(preferences)
 
   return (
     <>
@@ -25,9 +25,11 @@ const Pomodoro = () => {
         ))}
       </div>
       <Timer sessionType={session} initialTime={seconds} onTimerEnd={nextSession}/>
-      <div className="flex bg-transparent backdrop-blur-md border shadow-md border-gray-700 rounded-md p-2">
-        <Labels/>
-      </div>
+      {user ? (
+        <div className="flex bg-transparent backdrop-blur-md border shadow-md border-gray-700 rounded-md p-2">
+          <Labels/>
+        </div>
+      ) : <h1 className='font-bold italic'>Login or Sign Up to organize your focus</h1>}
     </>
   );
 }

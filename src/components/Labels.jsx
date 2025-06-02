@@ -1,25 +1,19 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
+import useLabelsStore from "../store/useLabelsStore.js";
 
 const Labels = () => {
-  const options = [
-    { id: 'label1', name: 'Label Satu' },
-    { id: 'label2', name: 'Label Dua' },
-    { id: 'label3', name: 'Label Tiga' },
-    { id: 'label4', name: 'Label Empat' },
-    { id: 'label5', name: 'Label Lima' },
-    { id: 'label6', name: 'Label Enam' },
-    { id: 'label7', name: 'Label Tujuh' },
-    { id: 'label8', name: 'Label Delapan' },
-    { id: 'label9', name: 'Label Sembilan' },
-    { id: 'label10', name: 'Label Sepuluh' },
-  ];
+  const {getLabels,labels} = useLabelsStore();
 
   const [selectedLabel, setSelectedLabel] = useState('');
+
+  useEffect(() => {
+    getLabels();
+  }, [])
 
   return (
     <div className="flex flex-col w-130">
       <div className="flex justify-between items-center">
-        <button className="btn btn-soft btn-secondary rounded-md">
+        <button className={`btn btn-soft rounded-md ${selectedLabel ? 'btn-secondary' : 'btn-disabled' }`}>
           <i className='bx  bx-trash-x text-2xl'/>
         </button>
         <div className="bg-gray-800 rounded-md px-4 py-1 border border-gray-700">
@@ -30,7 +24,7 @@ const Labels = () => {
         </button>
       </div>
       <div className="grid grid-cols-4 gap-3 mt-4">
-        {options.map((option) => (
+        {labels.map((option) => (
           <div key={option.id} className="form-control">
             <label className="label cursor-pointer">
               <input
@@ -40,7 +34,7 @@ const Labels = () => {
                 checked={selectedLabel === option.id}
                 onChange={() => setSelectedLabel(option.id)}
               />
-              <span className={`btn w-30 ${selectedLabel === option.id ? 'btn-primary' : 'btn-outline'}`}>
+              <span className={`btn w-30 bg-[${labels.color}]${selectedLabel === option.id ? 'btn-primary' : 'btn-outline'}`}>
                 {option.name}
               </span>
             </label>
