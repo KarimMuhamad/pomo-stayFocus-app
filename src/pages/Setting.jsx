@@ -1,7 +1,7 @@
-import {useAuth} from "../contexts/AuthContext.jsx";
+import useAuthStore from "../store/useAuthStore.js";
 
 const Setting = () => {
-  const {logout} = useAuth();
+  const {logout} = useAuthStore();
 
   const handleLogout = async () => {
     await logout();

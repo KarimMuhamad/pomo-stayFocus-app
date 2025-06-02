@@ -9,6 +9,7 @@ import Register from "./pages/Register.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
 function App() {
+
   return (
     <Routes>
       <Route path='/login' element={<Login/>} />

@@ -1,9 +1,9 @@
 import {create} from "zustand/react";
-import {createJSONStorage, persist} from "zustand/middleware";
 import axios from "../api/axiosInstance.js";
+import {clearAuthToken, getAuthToken} from "../utils/auth.js";
 
 const useAuthStore = create(
-  persist((set) => ({
+  (set) => ({
     user: null,
     accessToken: null,
 
@@ -13,6 +13,7 @@ const useAuthStore = create(
           credentials: 'include'
         });
         set({accessToken: res.data.accessToken, user: res.data});
+        localStorage.setItem("accessToken", res.data.accessToken);
         return res;
       } catch (error) {
         console.log(error);
@@ -22,26 +23,34 @@ const useAuthStore = create(
 
     logout: async () => {
       try {
-        const {accessToken} = useAuthStore.getState();
-
-        const res = await axios.delete('/auth/logout', {
-          headers: {
-            Authorization: `Bearer ${accessToken}`
-          }
-        });
+        const res = await axios.delete('/auth/logout');
         set({accessToken: null, user: null});
+        clearAuthToken();
         return res;
       } catch (error) {
         console.log(error);
         throw error;
       }
     },
-  }),
-{
-    name: 'pomodoro-app-auth',
-    storage: createJSONStorage(() => localStorage),
-    partialize: state => ({accessToken: state.accessToken})
-  })
-);
+
+    initializeUser: async () => {
+      const token = getAuthToken();
+      if (!token) return;
+
+      try {
+        const res = await axios.get('/users/me', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        set({user: res.data});
+      } catch (err) {
+        console.log(err);
+        localStorage.removeItem('accessToken');
+        set({accessToken: null, user: null});
+      }
+    }
+}));
 
 export default useAuthStore;

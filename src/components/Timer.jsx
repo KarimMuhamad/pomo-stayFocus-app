@@ -4,6 +4,7 @@ const Timer = ({initialTime, onTimerEnd}) => {
   const [time, setTime] = useState(initialTime);
   const [isActivated, setIsActivated] = useState(false);
   const timer = useRef(null);
+  const autoStart = true;
 
   useEffect(() => {
     setTime(initialTime);
@@ -14,6 +15,11 @@ const Timer = ({initialTime, onTimerEnd}) => {
       timer.current = setInterval(() => {
         setTime(time => time - 1);
         if (time === 0) {
+          if (!autoStart) {
+            setIsActivated(!isActivated);
+            clearInterval(timer.current);
+          }
+          console.log('test')
           onTimerEnd();
           clearInterval(timer.current);
         }

@@ -1,11 +1,9 @@
 import {Navigate, Outlet} from "react-router";
-import Layout from "./Layout.jsx";
-import {useAuth} from "../contexts/AuthContext.jsx";
 
 const ProtectedRoute = () => {
-  const {user} = useAuth();
+  const accesToken = localStorage.getItem("accessToken");
 
-  if (!user) {
+  if (!accesToken) {
     return <Navigate to='/login' replace/>
   }
 

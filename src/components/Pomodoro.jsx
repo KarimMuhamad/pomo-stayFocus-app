@@ -1,45 +1,16 @@
-import {useEffect, useState} from "react";
 import SessionTitle from "./SessionTitle.jsx";
 import Timer from "./Timer.jsx";
+import usePomodoroStore from "../store/usePomdoroStore.js";
+import {useEffect} from "react";
 
 const Pomodoro = () => {
-  const [session, setSession] = useState('FOCUS');
-  const [seconds, setSeconds] = useState(0);
-  const [currentSession, setCurrentSession] = useState(0);
+  const {preferences, seconds,session,sessionType, switchSession, nextSession, getPreferences} = usePomodoroStore();
 
-  const sessionType = ['FOCUS', 'BREAK', 'LONG BREAK'];
+  useEffect( () => {
+    getPreferences();
+  }, []);
 
-  const switchSession = (type) => {
-    setSession(type);
-
-    switch (type) {
-      case 'FOCUS':
-        setSeconds(5);
-        break;
-      case 'BREAK':
-        setSeconds(6);
-        break;
-      case 'LONG BREAK':
-        setSeconds(8);
-        break;
-      default:
-        setSeconds(5);
-        break;
-    }
-  }
-
-  useEffect(() => {
-    if (currentSession === 0 || currentSession === 2 || currentSession === 4 || currentSession === 6) {
-      switchSession(sessionType[0]);
-    } else if (currentSession === 1 || currentSession === 3 || currentSession === 5) {
-      switchSession(sessionType[1]);
-    } else if (currentSession === 7) {
-      switchSession(sessionType[2]);
-    } else {
-      setCurrentSession(0);
-      switchSession(sessionType[0]);
-    }
-  }, [currentSession])
+  console.log(preferences)
 
   return (
     <>
@@ -52,7 +23,7 @@ const Pomodoro = () => {
           >{type}</button>
         ))}
       </div>
-      <Timer sessionType={session} initialTime={seconds} onTimerEnd={() => setCurrentSession(currentSession + 1)}/>
+      <Timer sessionType={session} initialTime={seconds} onTimerEnd={nextSession}/>
     </>
   );
 }
