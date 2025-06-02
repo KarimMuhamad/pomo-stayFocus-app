@@ -2,6 +2,8 @@ import {create} from "zustand/react";
 import {getAuthToken} from "../utils/auth.js";
 import axios from "../api/axiosInstance.js";
 
+let abortController = null;
+
 const usePomodoroStore = create((set, get) => ({
   session: 'FOCUS',
   seconds: 0,
@@ -12,6 +14,14 @@ const usePomodoroStore = create((set, get) => ({
 
   // Fetch Data
   getPreferences: async () => {
+    if (abortController) {
+      abortController.abort();
+    }
+
+    abortController = new AbortController();
+    const signal = abortController.signal;
+    console.log(signal);
+
     const {accessToken} = getAuthToken();
 
     if (!accessToken) {
@@ -21,7 +31,7 @@ const usePomodoroStore = create((set, get) => ({
     }
 
     try {
-      const response = await axios.get('/users/preferences');
+      const response = await axios.get('/users/preferences', {signal});
 
       console.log(response);
 
@@ -32,16 +42,22 @@ const usePomodoroStore = create((set, get) => ({
 
       get().applyPreferences(prefs);
     } catch (err) {
+      if (axios.isCancel(err)) {
+        console.log('Request canceled', err.message);
+        return;
+      }
       set({error: err.response?.data?.message || err.message});
 
       get().applyDefault();
+    } finally {
+      abortController = null;
     }
   },
 
   applyPreferences: (prefs) => {
     const durations = {
       'FOCUS': prefs.focusDuration,
-      'BREAK': prefs.breakDuration,
+      'BREAK': prefs.shortBreakDuration,
       'LONG BREAK': prefs.longBreakDuration,
     }
 
@@ -54,7 +70,7 @@ const usePomodoroStore = create((set, get) => ({
   applyDefault: () => {
     const defaults = {
       focusDuration: 6,
-      breakDuration: 4,
+      shortBreakDuration: 4,
       longBreakDuration: 8,
     };
 
@@ -63,9 +79,9 @@ const usePomodoroStore = create((set, get) => ({
 
   switchSession: (type) => {
     const durations = {
-      'FOCUS': get().preferences?.focusDuration || 6,
-      'BREAK': get().preferences?.breakDuration || 4,
-      'LONG BREAK': get().preferences?.longBreakDuration || 8,
+      'FOCUS': get().preferences?.focusDuration,
+      'BREAK': get().preferences?.shortBreakDuration,
+      'LONG BREAK': get().preferences?.longBreakDuration,
     }
 
     if (type === 'FOCUS') {
@@ -102,9 +118,9 @@ const usePomodoroStore = create((set, get) => ({
 
   getDuration: (type) => {
     const durations = {
-      'FOCUS': get().preferences?.focusDuration || 6,
-      'BREAK': get().preferences?.breakDuration || 4,
-      'LONG BREAK': get().preferences?.longBreakDuration || 8,
+      'FOCUS': get().preferences?.focusDuration,
+      'BREAK': get().preferences?.shortBreakDuration,
+      'LONG BREAK': get().preferences?.longBreakDuration,
     }
 
     return durations[type]

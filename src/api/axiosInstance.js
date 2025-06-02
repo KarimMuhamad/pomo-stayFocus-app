@@ -34,8 +34,7 @@ axiosInstance.interceptors.response.use(
 
       try {
         const response = await axios.post(
-          '/auth/refresh',
-          { withCredentials: true } // kirim cookie
+          'http://localhost:3000/api/v1/auth/refresh',
         );
 
         console.log(response);
